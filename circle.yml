@@ -9,6 +9,10 @@ dependencies:
   override:
     - docker info
     - docker build --rm=false -t gr4per/nginx-rp .
+test:
+  override:
+    - docker-compose run nginx
+    - curl --retry 10 --retry-delay 1 localhost:8000/public/health_check.html | grep "nginx"
 
 deployment:
   hub:
