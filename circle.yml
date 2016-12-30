@@ -11,6 +11,7 @@ dependencies:
 test:
   override:
     - docker-compose up -d
+    - sleep 10
     - curl --retry 10 --retry-delay 1 localhost:8000/public/health_check.html
 
 deployment:
