@@ -3,7 +3,6 @@ services:
   consul:
     image: "progrium/consul:latest"
     container_name: "consul1"
-    network_mode: "host"
     ports:
       - "8400:8400"
       - "8500:8500"
@@ -12,10 +11,9 @@ services:
   registrator:
     image: "gliderlabs/registrator:latest"
     container_name: "registrator"
-    network_mode: "host"
     depends_on:
       - consul
-    command: "consul://localhost:8500"
+    command: "consul://consul:8500"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
   nginx:
@@ -29,5 +27,6 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
+#      - DOCKERHOST=172.17.0.1
     depends_on:
       - registrator
