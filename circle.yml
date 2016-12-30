@@ -11,7 +11,7 @@ dependencies:
 test:
   override:
     - docker-compose up -d
-    - curl --retry 10 --retry-delay 1 localhost:8000/public/health_check.html | grep "nginx"
+    - curl --retry 10 --retry-delay 1 localhost:8000/public/health_check.html
 
 deployment:
   hub:
