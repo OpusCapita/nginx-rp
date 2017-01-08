@@ -9,5 +9,6 @@ RUN mkdir -p /var/www/public && \
     chmod +x /usr/local/bin/startup-script.sh /usr/local/bin/consul-template && \
     rm -v /etc/nginx/conf.d/*
 
+ENV PORT=${PORT:-3000}
 COPY nginx.conf /etc/consul-templates/nginx.conf
 CMD ["startup-script.sh"]
