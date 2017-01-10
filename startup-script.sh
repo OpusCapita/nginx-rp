@@ -9,7 +9,7 @@ DOCKERHOST="$(printf "%d." $(
 
 # wait=1s is a bug work-around.
 exec consul-template \
-     -consul=$DOCKERHOST:8500 \
+     -consul=consul:8500 \
      -template="/etc/consul-templates/nginx.conf:/etc/nginx/conf.d/app.conf" \
      -exec-reload-signal=SIGHUP \
      -exec-kill-signal=SIGQUIT \
