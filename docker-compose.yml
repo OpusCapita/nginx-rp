@@ -22,10 +22,7 @@ services:
     volumes:
       - .:/module
     ports:
-      - "8000:8000"
-    environment:
-      - PORT=8000
-#      - DOCKERHOST=172.17.0.1
+      - "8080:8080"
     links:
       - consul
     depends_on:
