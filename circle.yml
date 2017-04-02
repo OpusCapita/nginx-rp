@@ -21,3 +21,9 @@ deployment:
     commands:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       - docker push gr4per/nginx-rp:latest
+  hub:
+    branch: develop
+    commands:
+      - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+      - docker tag gr4per/nginx-rp:latest gr4per/nginx-rp:dev
+      - docker push gr4per/nginx-rp:dev
