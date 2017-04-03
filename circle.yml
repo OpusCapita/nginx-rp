@@ -1,7 +1,7 @@
 machine:
   pre:
-   - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
-   - sudo pip install docker-compose
+    - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
+    - pip install --force-reinstall -U docker-compose==1.10.0
   services:
     - docker
 
@@ -21,3 +21,9 @@ deployment:
     commands:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       - docker push gr4per/nginx-rp:latest
+  hub:
+    branch: develop
+    commands:
+      - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+      - docker tag gr4per/nginx-rp:latest gr4per/nginx-rp:dev
+      - docker push gr4per/nginx-rp:dev
