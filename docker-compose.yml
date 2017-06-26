@@ -19,11 +19,14 @@ services:
   nginx:
     build:
       context: .
+    network_mode: host
     volumes:
       - .:/module
+    extra_hosts:
+      - consul:172.17.0.1
     ports:
       - "8080:8080"
-    links:
-      - consul
+    #links:
+    #  - consul
     depends_on:
       - registrator
