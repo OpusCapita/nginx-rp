@@ -17,16 +17,15 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
   nginx:
+    #network_mode: host
     build:
       context: .
     network_mode: host
     volumes:
       - .:/module
-    extra_hosts:
-      - consul:172.17.0.1
     ports:
       - "8080:8080"
-    #links:
-    #  - consul
+    extra_hosts:
+      - "consul:$HOST_IP"
     depends_on:
       - registrator
