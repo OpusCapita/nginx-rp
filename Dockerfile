@@ -28,6 +28,6 @@ ADD ./services/ /services/
 ADD service-registry.sh /
 RUN chmod u+x /service-registry.sh
 
-CMD /service-registry.sh :; /startup.sh
+CMD /service-registry.sh ; /startup.sh
 
 EXPOSE $NGINX_PORT
