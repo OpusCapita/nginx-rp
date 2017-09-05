@@ -16,7 +16,7 @@ dependencies:
     - docker build --rm=false -t gr4per/nginx-rp:latest .
 test:
   override:
-    - docker-compose up -d
+    - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
     - sleep 10
     - curl --retry 10 --retry-delay 1 localhost:8080/public/health_check.html
 

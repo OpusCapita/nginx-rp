@@ -1,61 +1,8 @@
 version: '2'
 services:
   main:
-    build: .
     ports:
       - '8080:8080'
-    depends_on:
-      - registrator
-
-  acl:
-    image: opuscapita/acl:dev
-    container_name: 'acl'
-    labels:
-      - 'SERVICE_NAME=acl'
-      - 'SERVICE_TAGS=external,kong'
-    environment:
-      PORT: 3013
-      HOST_IP: ${HOST_IP}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      SERVICE_3013_CHECK_HTTP: /api/health/check
-      SERVICE_3013_CHECK_INTERVAL: 15s
-      SERVICE_3013_CHECK_TIMEOUT: 3s
-    ports:
-     - '3013:3013'
-    depends_on:
-      - registrator
-    command: 'npm run dev'
-
-  isodata:
-    image: opuscapita/isodata:dev
-    ports:
-      - '3006:3006'
-    extra_hosts:
-      - 'consul:${HOST_IP}'
-    depends_on:
-      - consul
-      - mysql
-    labels:
-      - 'SERVICE_NAME=isodata'
-      - 'SERVICE_TAGS=external,kong'
-    environment:
-      HOST_IP: ${HOST_IP}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      PORT: '3006'
-      SERVICE_3006_CHECK_HTTP: /api/health/check
-      SERVICE_3006_CHECK_INTERVAL: 15s
-      SERVICE_3006_CHECK_TIMEOUT: 3s
-    command: 'npm run dev'
-
-  mysql:
-    image: 'mysql:5.6'
-    ports:
-      - '3306:3306'
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
     depends_on:
       - registrator
 
