@@ -8,10 +8,7 @@ services:
       - registrator
 
   acl:
-    # image: opuscapita/acl:dev
-    build: ../acl
-    volumes:
-      - '../acl:/home/node/acl'
+    image: opuscapita/acl:dev
     container_name: 'acl'
     labels:
       - 'SERVICE_NAME=acl'
