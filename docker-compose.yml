@@ -11,7 +11,6 @@ services:
 
   registrator:
     image: gliderlabs/registrator:latest
-    network_mode: host
     #restart: always
     depends_on:
       - consul

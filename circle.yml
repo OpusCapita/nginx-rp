@@ -11,6 +11,8 @@ dependencies:
     - >
       if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
         echo "running base img build..." && docker build --rm=false -t gr4per/nginx-rp:base -f Dockerfile.base .
+        docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
+        echo "running base img deploy temporary..." && docker push gr4per/nginx-rp:base
       fi
     - docker build --rm=false -t gr4per/nginx-rp:latest .
 test:
