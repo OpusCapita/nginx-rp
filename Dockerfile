@@ -1,4 +1,4 @@
-FROM opuscapita/nginx-lua-consul:latest
+FROM gr4per/nginx-rp:base
 
 WORKDIR /
 
