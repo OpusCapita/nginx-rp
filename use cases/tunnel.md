@@ -61,7 +61,7 @@ Now type localhost:8080/kibana/ in your browser and enjoy
 ## Troubleshooting
 ### Inspect current nginx-rp conf
 ```
-docker exec -it $(docker ps | grep nginx | awk '{print $1}') cat /etc/nginx/conf.d/app.conf
+docker exec -it $(docker ps | grep nginx | awk '{print $1}') cat /etc/nginx/nginx.conf
 ```
 This should list an upstream for kibana
 Also the proxy-pass rules for kibana should be in place
