@@ -18,8 +18,9 @@ services:
     command: ['-ip=${HOST_IP}', 'consul://localhost:8500']
 
   consul:
-    command: -bootstrap -ui
-    image: gliderlabs/consul-server
+    command: "-server -bootstrap -ui-dir /ui"
+    image: "progrium/consul:latest"
+    container_name: "consul1"
     labels:
       - 'SERVICE_NAME=consul'
     ports:
