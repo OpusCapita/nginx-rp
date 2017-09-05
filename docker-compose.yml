@@ -6,11 +6,10 @@ services:
       - '8080:8080'
     depends_on:
       - registrator
-    extra_hosts:
-      - "consul:$HOST_IP"
 
   registrator:
     image: gliderlabs/registrator:latest
+    network_mode: host
     #restart: always
     depends_on:
       - consul
@@ -19,9 +18,8 @@ services:
     command: ['-ip=${HOST_IP}', 'consul://localhost:8500']
 
   consul:
-    command: "-server -bootstrap -ui-dir /ui"
-    image: "progrium/consul:latest"
-    container_name: "consul1"
+    command: -bootstrap -ui
+    image: gliderlabs/consul-server
     labels:
       - 'SERVICE_NAME=consul'
     ports:
