@@ -39,9 +39,9 @@ docker-compose -f docker-compose.tunnel.yml up -d --build
 then configure consul to reverse proxy kibana.
 Since the localhost is not accessible from container, have to find the ip of your dev machine, and add them as a address
 ```
-curl -X PUT -d "{\"Datacenter\": \"dc1\", \"Node\": \"kibana\", \"Address\" : \"YOUR_MACHINE_IP\", \"Service\": {\"Service\": \"kibana\", \"Port\": 5601, \"Address\" : \"YOUR_MACHINE_IP\",\"Tags\":[\"external\"]}}" http://localhost:8500/v1/catalog/register
+curl -X PUT -d "{\"Datacenter\": \"dc1\", \"Node\": \"kibana\", \"Address\" : \"YOUR_MACHINE_IP\", \"Service\": {\"Service\": \"kibana\", \"Port\": 5601, \"Address\" : \"YOUR_MACHINE_IP\",\"Tags\":[\"external\", \"kong\"]}}" http://localhost:8500/v1/catalog/register
 ```
-**Note:** `YOUR_MACHINE_IP` should be replaced by your dev machine ip address
+**Note:** `YOUR_MACHINE_IP` should be replaced by your dev machine ip address, and dont forget to add the tag `kong`
 
 ### Test
 
