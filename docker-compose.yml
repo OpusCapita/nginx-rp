@@ -18,7 +18,7 @@ services:
     command: ['-ip=${HOST_IP}', 'consul://localhost:8500']
 
   consul:
-    command: -bootstrap -ui
+    command: -bootstrap-expect=1 -ui
     image: gliderlabs/consul-server
     labels:
       - 'SERVICE_NAME=consul'

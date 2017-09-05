@@ -15,7 +15,7 @@ do
   fi
 done
 
-curl -X PUT "http://$consulService:8500/v1/kv/user/json" -d "'{\"id\":\"test\", \"username\": \"testUser1\"}'"
+curl --retry 10 --retry-delay 1 -X PUT "http://$consulService:8500/v1/kv/user/json" -d "'{\"id\":\"test\", \"username\": \"testUser1\"}'"
 
 # resetting to default
 export IFS="\ $'\t'$'\n'"
