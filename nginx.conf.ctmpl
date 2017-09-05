@@ -1,0 +1,100 @@
+{{ range "nginx" | ls }}
+  {{ .Key }} {{ .Value }};
+{{ end }}
+
+events {
+  {{ range "nginx/events" | ls }}
+    {{ .Key }} {{ .Value }};
+  {{ end }}
+}
+
+http {
+  map $host $userJSON {
+    default {{ key "user/json" }};
+  }
+
+  init_by_lua_block {
+    authService = require("services.auth");
+  }
+
+  {{ range "nginx/http" | ls }}
+    {{ .Key }} {{ .Value }};
+  {{ end }}
+
+  # ranges the server and get the address and port from consul
+  # and add a upstream for them
+  {{ range $service := services }} {{ if ne .Name "consul" }} {{ if .Tags.Contains "kong" }}
+  upstream {{ $service.Name }} {
+      {{ range $tag, $services := service .Name | byTag }}
+              {{ range $services }}
+                server {{ .Address }}:{{ .Port }};
+              {{ end }}
+      {{ end }}
+  }
+  {{ end }} {{ end }} {{ end }}
+
+  server {
+
+    {{ range "nginx/http/server/nginx/" | ls }}
+      {{ .Key }} {{ .Value }};
+    {{ end }}
+
+    location /public {
+      root /var/www/;
+      expires 0d;
+    }
+
+    location / {
+      proxy_set_header X-Forwarded-Host $http_host;
+      proxy_set_header X-Forwarded-Server $host;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      return 301 $scheme://$http_host/bnp;
+    }
+
+    location /auth/certs {
+      access_by_lua_block {
+        authService.certificate()
+      }
+    }
+
+    # Dummy, since editign the KV and refresh will work.
+    location /auth/refreshIdToken {
+      access_by_lua_block {
+        ngx.status = ngx.HTTP_OK
+        ngx.header.content_type = "application/json; charset=utf-8"
+        ngx.say("Done");
+        ngx.exit(ngx.OK)
+      }
+    }
+
+    location /auth/userdata {
+      access_by_lua_block {
+        authService.getUserData()
+      }
+    }
+
+    {{ range $service := services }}
+      {{ if ne $service.Name "consul" }} {{ if .Tags.Contains "kong" }}
+        location /{{ $service.Name }}/ {
+          access_by_lua_block {
+            authService.access()
+          }
+          proxy_pass http://{{ $service.Name }}/;
+          proxy_set_header X-Forwarded-Host $http_host;
+          proxy_set_header X-Forwarded-Server $host;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          {{ range printf "nginx/http/server/%s/location" $service.Name | ls }}
+            {{ .Key }} {{ .Value }};
+          {{ end }}
+        }
+      {{ end }} {{ end }}
+    {{ end }}
+
+    # mandatory services : acl, nginx-rp, (any services as per the requirement the owned service).
+    # TODO
+    # add endpoint to supply the key to useridentity middleware.
+    # add endpoint for refreshIdToken.
+  }
+}

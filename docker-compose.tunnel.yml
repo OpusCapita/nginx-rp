@@ -17,15 +17,8 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
   nginx:
-    network_mode: host
-    build:
-      context: .
-    network_mode: host
-    volumes:
-      - .:/module
+    build: .
     ports:
-      - "8080:8080"
-    extra_hosts:
-      - "consul:$HOST_IP"
+      - '8080:8080'
     depends_on:
       - registrator
