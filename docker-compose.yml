@@ -1,31 +1,84 @@
-version: '2'
+version: '3'
 services:
-  consul:
-    image: "progrium/consul:latest"
-    container_name: "consul1"
+  main:
+    build: .
     ports:
-      - "8400:8400"
-      - "8500:8500"
-      - "8600:53/udp"
-    command: "-server -bootstrap -ui-dir /ui"
-  registrator:
-    image: "gliderlabs/registrator:latest"
-    container_name: "registrator"
-    depends_on:
-      - consul
-    command: "consul://consul:8500"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-  nginx:
-    network_mode: host
-    build:
-      context: .
-    network_mode: host
-    volumes:
-      - .:/module
-    ports:
-      - "8080:8080"
-    extra_hosts:
-      - "consul:$HOST_IP"
+      - '8080:8080'
     depends_on:
       - registrator
+
+  acl:
+    # image: opuscapita/acl:dev
+    build: ../acl
+    volumes:
+      - '../acl:/home/node/acl'
+    container_name: 'acl'
+    labels:
+      - 'SERVICE_NAME=acl'
+      - 'SERVICE_TAGS=external,kong'
+    environment:
+      PORT: 3013
+      HOST_IP: ${HOST_IP}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      SERVICE_3013_CHECK_HTTP: /api/health/check
+      SERVICE_3013_CHECK_INTERVAL: 15s
+      SERVICE_3013_CHECK_TIMEOUT: 3s
+    ports:
+     - '3013:3013'
+    depends_on:
+      - registrator
+    command: 'npm run dev'
+
+  isodata:
+    image: opuscapita/isodata:dev
+    ports:
+      - '3006:3006'
+    extra_hosts:
+      - 'consul:${HOST_IP}'
+    depends_on:
+      - consul
+      - mysql
+    labels:
+      - 'SERVICE_NAME=isodata'
+      - 'SERVICE_TAGS=external,kong'
+    environment:
+      HOST_IP: ${HOST_IP}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      PORT: '3006'
+      SERVICE_3006_CHECK_HTTP: /api/health/check
+      SERVICE_3006_CHECK_INTERVAL: 15s
+      SERVICE_3006_CHECK_TIMEOUT: 3s
+    command: 'npm run dev'
+
+  mysql:
+    image: 'mysql:5.6'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    depends_on:
+      - registrator
+
+  registrator:
+    image: gliderlabs/registrator:latest
+    network_mode: host
+    #restart: always
+    depends_on:
+      - consul
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    command: ['-ip=${HOST_IP}', 'consul://localhost:8500']
+
+  consul:
+    command: -bootstrap -ui
+    image: gliderlabs/consul-server
+    labels:
+      - 'SERVICE_NAME=consul'
+    ports:
+      - '8400:8400'
+      - '8500:8500'
+      - '53:8600/udp'
+      - '53:8600'

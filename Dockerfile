@@ -1,14 +1,35 @@
-FROM nginx:stable-alpine
-MAINTAINER Arne Graeper <gr4per@arne-graeper.de>
+FROM opuscapita/nginx-lua-consul:latest
 
-COPY consul-template_0.16.0_linux_amd64 /usr/local/bin/consul-template
-COPY startup-script.sh /usr/local/bin/startup-script.sh
+WORKDIR /
+
+RUN luarocks install jwt
 
 RUN mkdir -p /var/www/public && \
-    echo "<html><body>OK</body></html>" > /var/www/public/health_check.html && \
-    chmod +x /usr/local/bin/startup-script.sh /usr/local/bin/consul-template && \
-    rm -v /etc/nginx/conf.d/*
+    echo "<html><body>OK</body></html>" > /var/www/public/health_check.html
 
-EXPOSE 8080
-COPY nginx.conf /etc/consul-templates/nginx.conf
-CMD ["startup-script.sh"]
+ARG consul_host=consul
+ARG nginx_port=8080
+ARG fake_service=auth,kong
+ARG user_identity='{\"id\":\"test\", \"username\": \"testUser1\"}'
+
+ENV CONSUL_PORT_8500_TCP_ADDR=$consul_host
+ENV NGINX_PORT=$nginx_port
+ENV SERVICES_FAKE=$fake_service
+ENV USER_IDENTITY=$user_identity
+
+ADD nginx.conf /etc/nginx/nginx.conf
+ADD nginx.conf.ctmpl /etc/nginx/nginx.conf.ctmpl
+
+ADD startup.sh restart.sh consul_config.sh config.json /
+RUN chmod u+x /startup.sh && \
+    chmod u+x /restart.sh && \
+    chmod u+x /consul_config.sh
+
+ADD ./services/ /services/
+
+ADD service-registry.sh /
+RUN chmod u+x /service-registry.sh
+
+CMD /service-registry.sh :; /startup.sh
+
+EXPOSE $NGINX_PORT
