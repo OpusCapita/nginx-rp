@@ -6,6 +6,8 @@ services:
       - '8080:8080'
     depends_on:
       - registrator
+    environment:
+      USER_IDENTITY: '{\"id\":\"test123\", \"username\": \"testUser1\"}'
 
   registrator:
     image: gliderlabs/registrator:latest

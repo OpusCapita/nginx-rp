@@ -1,16 +1,16 @@
 ## NGINX for development (replacement for kong in dev environment).
 
 ### NOTES
-all the services which needs to be served via nginx should have tag `kong`
+all the services which needs to be served via nginx should have tag `kong`. Sample docker-compose file is given at the end of the document.
 
 ### ENV variables
 
 Variables | Default value | Description
 --- | --- | ---
-CONSUL_PORT_8500_TCP_ADDR | consul | Host IP for the consul
+CONSUL_PORT_8500_TCP_ADDR | consul | IP for the consul
 NGINX_PORT | 8080 | Port number on which nginx is listening
 SERVICES_FAKE | auth,kong | services to fake, just to say they are alive, not to perform any action, to perform any particular action need to add custom nginx consul template.
-USER_IDENTITY | '{\"id\":\"test\", \"username\": \"testUser1\"}' | faked user informations, which will be converted as a ID Token
+USER_IDENTITY | {\"id\":\"test\", \"username\": \"testUser1\"} | faked user informations, which will be converted as a ID Token
 
 ### CONSUL TEMPLATE
 consul template is been used to live reloading for service monitoring and KV changes monitoring. refer [Consul-template](https://github.com/hashicorp/consul-template), if you would like to change the default template used.
@@ -49,14 +49,14 @@ Can change the user/json using env `USER_IDENTITY` or on the fly with consul adm
 
 #### CURL
 ```
-curl -d '{"id": "idNumber"}' http://localhost:8500/v1/kv/user/json
+curl -X PUT -d "'{\"id\": \"idNumber\"}'" http://localhost:8500/v1/kv/user/json
 ```
-When added as env
+
+When added as env from compose
 
 ```
-USER_IDENTITY='{\"id\": \"idNumber\"}'
+USER_IDENTITY={\"id\": \"idNumber\"}
 ```
-make sure adding with `' '` to say the value is string.
 
 ### Faking services
 By default the following services are faked `auth, kong`. If you want to add some more services also, the fake services are just to say that this services are alive, it wont help in-terms performing any action towards a particular URL until you add a custom nginx template.
@@ -136,3 +136,13 @@ http {
 ```
 
 NOTE: For many services the default template is more than enough, unless you are working in auth, kong, user.
+
+### Sample docker-compose file (minimum required to run services without auth, user, kong, postgres)
+```yaml
+  nginx-rp:
+    image: gr4per/nginx-rp:dev
+    ports:
+      - '8080:8080'
+    depends_on:
+      - registrator
+```
