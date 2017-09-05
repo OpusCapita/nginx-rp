@@ -77,4 +77,6 @@ RUN luarocks install lua-resty-jwt
 
 RUN luarocks install lua-cjson
 
+luarocks install luacrypto
+
 RUN luarocks install lua-resty-string
