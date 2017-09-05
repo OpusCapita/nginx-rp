@@ -73,6 +73,8 @@ RUN curl -SL http://stedolan.github.io/jq/download/linux64/jq > /usr/local/bin/j
 
 RUN apt-get install -y luarocks
 
+RUN luarocks install lua-resty-jwt
+
 RUN luarocks install lua-cjson
 
 RUN luarocks install lua-resty-string

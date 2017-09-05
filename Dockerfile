@@ -2,8 +2,6 @@ FROM gr4per/nginx-rp:base
 
 WORKDIR /
 
-RUN luarocks install jwt
-
 RUN mkdir -p /var/www/public && \
     echo "<html><body>OK</body></html>" > /var/www/public/health_check.html
 
