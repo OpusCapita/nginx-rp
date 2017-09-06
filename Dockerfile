@@ -1,4 +1,4 @@
-FROM gr4per/nginx-rp:base
+FROM opuscapita/nginx-rp:base
 
 WORKDIR /
 

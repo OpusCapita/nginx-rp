@@ -140,7 +140,7 @@ NOTE: For many services the default template is more than enough, unless you are
 ### Sample docker-compose file (minimum required to run services without auth, user, kong, postgres)
 ```yaml
   nginx-rp:
-    image: gr4per/nginx-rp:dev
+    image: opuscapita/nginx-rp:dev
     ports:
       - '8080:8080'
     depends_on:
