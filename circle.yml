@@ -10,9 +10,9 @@ dependencies:
     - docker info
     - >
       if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
-        echo "running base img build..." && docker build --rm=false -t gr4per/nginx-rp:base -f Dockerfile.base .
+        echo "running base img build..." && docker build --rm=false -t opuscapita/nginx-rp:base -f Dockerfile.base .
       fi
-    - docker build --rm=false -t gr4per/nginx-rp:latest .
+    - docker build --rm=false -t opuscapita/nginx-rp:latest .
 test:
   override:
     - docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
@@ -26,16 +26,16 @@ deployment:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       - >
         if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
-          echo "running base img deploy..." && docker push gr4per/nginx-rp:base
+          echo "running base img deploy..." && docker push opuscapita/nginx-rp:base
         fi
-      - docker push gr4per/nginx-rp:latest
+      - docker push opuscapita/nginx-rp:latest
   hub:
     branch: develop
     commands:
       - docker login -u $DOCKER_USER -p $DOCKER_PASS -e $DOCKER_EMAIL
       - >
         if [ -n "${RUN_NIGHTLY_BUILD}" ]; then
-          echo "running base img deploy..." && docker push gr4per/nginx-rp:base
+          echo "running base img deploy..." && docker push opuscapita/nginx-rp:base
         fi
-      - docker tag gr4per/nginx-rp:latest gr4per/nginx-rp:dev
-      - docker push gr4per/nginx-rp:dev
+      - docker tag opuscapita/nginx-rp:latest opuscapita/nginx-rp:dev
+      - docker push opuscapita/nginx-rp:dev
