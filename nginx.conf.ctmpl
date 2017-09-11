@@ -80,6 +80,7 @@ http {
           access_by_lua_block {
             authService.access()
           }
+          expires -1;
           proxy_pass http://{{ $service.Name }}/;
           proxy_set_header X-Forwarded-Host $http_host;
           proxy_set_header X-Forwarded-Server $host;
