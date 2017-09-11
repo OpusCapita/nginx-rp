@@ -49,7 +49,7 @@ http {
       proxy_set_header X-Forwarded-Server $host;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Proto $scheme;
-      return 301 $scheme://$http_host/bnp;
+      return 307 $scheme://$http_host/bnp;
     }
 
     location /auth/certs {
