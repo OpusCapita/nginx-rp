@@ -9,7 +9,7 @@ Variables | Default value | Description
 --- | --- | ---
 CONSUL_PORT_8500_TCP_ADDR | consul | IP for the consul
 NGINX_PORT | 8080 | Port number on which nginx is listening
-SERVICES_FAKE | auth,kong | services to fake, just to say they are alive, not to perform any action, to perform any particular action need to add custom nginx consul template.
+SERVICES_FAKE | auth,kong | Fake services are just to say they are alive, not to perform any action, to perform any particular action need to add custom nginx consul template.
 USER_IDENTITY | {\"id\":\"test\", \"username\": \"testUser1\"} | faked user informations, which will be converted as a ID Token
 
 ### CONSUL TEMPLATE
