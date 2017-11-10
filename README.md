@@ -146,3 +146,15 @@ NOTE: For many services the default template is more than enough, unless you are
     depends_on:
       - registrator
 ```
+
+### Sample consul docker-compose lines to use
+```yaml
+consul:
+  image: consul:latest
+  ports:
+    - '8400:8400'
+    - '8500:8500'
+    - '8600:53/udp'
+  command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0', '-enable-script-checks', 'true']
+```
+***'-enable-script-checks', 'true'*** is important to execute the fake service health checks
