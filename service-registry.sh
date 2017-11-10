@@ -10,7 +10,7 @@ do
   service_to_register="$(echo $service | sed 's,^ *,,; s, *$,,' )"
   if [ $service_to_register ]
   then
-    jsonvalue="$(echo "{\"Name\":\"${service_to_register}\", \"Address\":\"${host_ip}\", \"Tags\": [\"kong\"], \"Port\":$nginx_port, \"Check\": "{\"Name\": \"Check Script\", \"Script\": \"ping -c1 google.com\", \"Interval\": \"10s\"}"}")"
+    jsonvalue="$(echo "{\"Name\":\"${service_to_register}\", \"Address\":\"${host_ip}\", \"Tags\": [\"kong\"], \"Port\":$nginx_port, \"Check\": "{\"Name\": \"Check Script\", \"Script\": \"ping -c1 google.com\", \"Interval\": \"10s\", \"Timeout\": \"30s\"}"}")"
 
     echo "Registering service $service $nginx_port $jsonvalue"
     curl -X POST --header "Content-Type: application/json" -d "$jsonvalue" "http://$consulService:8500/v1/agent/service/register"
