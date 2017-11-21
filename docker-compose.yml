@@ -26,4 +26,4 @@ services:
       - '8400:8400'
       - '8500:8500'
       - '8600:53/udp'
-    command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0', '-enable-script-checks', 'true']
+    command: [agent, '-server', '-ui', '-bootstrap', '-client=0.0.0.0', '-enable-script-checks']
